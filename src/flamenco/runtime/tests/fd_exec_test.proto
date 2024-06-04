@@ -263,3 +263,9 @@ message SyscallFixture {
     SyscallContext input = 1;
     SyscallEffects output = 2;
 }
+
+// Effects of fd_vm_validate
+message ValidateVmEffects {
+    // Really the only thing we need is if successful or not
+    int32 result = 1;
+}
