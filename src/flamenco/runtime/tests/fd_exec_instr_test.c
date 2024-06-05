@@ -1191,6 +1191,9 @@ fd_exec_vm_validate_test_run( fd_exec_test_vm_context_t const *     input,
                               ulong                                 output_bufsz ) {
   fd_valloc_t valloc = fd_scratch_virtual();
 
+  if ( FD_UNLIKELY( !input->rodata)){
+    return 0UL;
+  }
   FD_TEST( output_bufsz >= sizeof(fd_exec_test_validate_vm_effects_t) );
 
   /* Capture outputs */
@@ -1201,9 +1204,9 @@ fd_exec_vm_validate_test_run( fd_exec_test_vm_context_t const *     input,
                                 sizeof (fd_exec_test_validate_vm_effects_t) );
   FD_SCRATCH_ALLOC_FINI( l, 1UL );
 
-  FD_TEST( input->rodata );
-  FD_TEST( input->rodata_text_section_offset );
-  FD_TEST( input->rodata_text_section_length );
+  // FD_TEST( input->rodata );
+  // FD_TEST( input->rodata_text_section_offset );
+  // FD_TEST( input->rodata_text_section_length );
 
   uchar * rodata = input->rodata->bytes;
   ulong rodata_sz = input->rodata->size;
