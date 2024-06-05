@@ -385,9 +385,9 @@ sol_compat_vm_validate_v1(  uchar *       out,
 
   pb_istream_t istream = pb_istream_from_buffer( in, in_sz );
   fd_exec_test_vm_context_t input[1] = {0};
-  int decode_ok = pb_decode_ex( &istream, &fd_exec_test_validate_vm_effects_t_msg, input, PB_DECODE_NOINIT );
+  int decode_ok = pb_decode_ex( &istream, &fd_exec_test_vm_context_t_msg, input, PB_DECODE_NOINIT );
   if( !decode_ok ) {
-    pb_release( &fd_exec_test_validate_vm_effects_t_msg, input );
+    pb_release( &fd_exec_test_vm_context_t_msg, input );
     return 0;
   }
 
