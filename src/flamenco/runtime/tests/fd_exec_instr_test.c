@@ -1204,10 +1204,6 @@ fd_exec_vm_validate_test_run( fd_exec_test_vm_context_t const *     input,
                                 sizeof (fd_exec_test_validate_vm_effects_t) );
   FD_SCRATCH_ALLOC_FINI( l, 1UL );
 
-  // FD_TEST( input->rodata );
-  // FD_TEST( input->rodata_text_section_offset );
-  // FD_TEST( input->rodata_text_section_length );
-
   uchar * rodata = input->rodata->bytes;
   ulong rodata_sz = input->rodata->size;
 
@@ -1239,6 +1235,7 @@ fd_exec_vm_validate_test_run( fd_exec_test_vm_context_t const *     input,
 
   /* Run vm validate and capture result */
   effects->result = fd_vm_validate( vm );
+  effects->success = (effects->result == FD_VM_SUCCESS);
 
   *output = effects;
   return sizeof (fd_exec_test_validate_vm_effects_t);

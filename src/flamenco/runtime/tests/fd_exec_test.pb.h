@@ -248,6 +248,7 @@ typedef struct fd_exec_test_syscall_fixture {
 typedef struct fd_exec_test_validate_vm_effects {
     /* Really the only thing we need is if successful or not */
     int32_t result;
+    bool success;
 } fd_exec_test_validate_vm_effects_t;
 
 
@@ -275,7 +276,7 @@ extern "C" {
 #define FD_EXEC_TEST_SYSCALL_CONTEXT_INIT_DEFAULT {false, FD_EXEC_TEST_VM_CONTEXT_INIT_DEFAULT, false, FD_EXEC_TEST_INSTR_CONTEXT_INIT_DEFAULT, false, FD_EXEC_TEST_SYSCALL_INVOCATION_INIT_DEFAULT}
 #define FD_EXEC_TEST_SYSCALL_EFFECTS_INIT_DEFAULT {0, 0, 0, NULL, NULL, NULL, 0, NULL}
 #define FD_EXEC_TEST_SYSCALL_FIXTURE_INIT_DEFAULT {false, FD_EXEC_TEST_SYSCALL_CONTEXT_INIT_DEFAULT, false, FD_EXEC_TEST_SYSCALL_EFFECTS_INIT_DEFAULT}
-#define FD_EXEC_TEST_VALIDATE_VM_EFFECTS_INIT_DEFAULT {0}
+#define FD_EXEC_TEST_VALIDATE_VM_EFFECTS_INIT_DEFAULT {0, 0}
 #define FD_EXEC_TEST_FEATURE_SET_INIT_ZERO       {0, NULL}
 #define FD_EXEC_TEST_ACCT_STATE_INIT_ZERO        {false, {0}, false, 0, NULL, false, 0, false, 0, false, {0}}
 #define FD_EXEC_TEST_EPOCH_CONTEXT_INIT_ZERO     {false, FD_EXEC_TEST_FEATURE_SET_INIT_ZERO}
@@ -295,7 +296,7 @@ extern "C" {
 #define FD_EXEC_TEST_SYSCALL_CONTEXT_INIT_ZERO   {false, FD_EXEC_TEST_VM_CONTEXT_INIT_ZERO, false, FD_EXEC_TEST_INSTR_CONTEXT_INIT_ZERO, false, FD_EXEC_TEST_SYSCALL_INVOCATION_INIT_ZERO}
 #define FD_EXEC_TEST_SYSCALL_EFFECTS_INIT_ZERO   {0, 0, 0, NULL, NULL, NULL, 0, NULL}
 #define FD_EXEC_TEST_SYSCALL_FIXTURE_INIT_ZERO   {false, FD_EXEC_TEST_SYSCALL_CONTEXT_INIT_ZERO, false, FD_EXEC_TEST_SYSCALL_EFFECTS_INIT_ZERO}
-#define FD_EXEC_TEST_VALIDATE_VM_EFFECTS_INIT_ZERO {0}
+#define FD_EXEC_TEST_VALIDATE_VM_EFFECTS_INIT_ZERO {0, 0}
 
 /* Field tags (for use in manual encoding/decoding) */
 #define FD_EXEC_TEST_FEATURE_SET_FEATURES_TAG    1
@@ -374,6 +375,7 @@ extern "C" {
 #define FD_EXEC_TEST_SYSCALL_FIXTURE_INPUT_TAG   1
 #define FD_EXEC_TEST_SYSCALL_FIXTURE_OUTPUT_TAG  2
 #define FD_EXEC_TEST_VALIDATE_VM_EFFECTS_RESULT_TAG 1
+#define FD_EXEC_TEST_VALIDATE_VM_EFFECTS_SUCCESS_TAG 2
 
 /* Struct field encoding specification for nanopb */
 #define FD_EXEC_TEST_FEATURE_SET_FIELDLIST(X, a) \
@@ -549,7 +551,8 @@ X(a, STATIC,   OPTIONAL, MESSAGE,  output,            2)
 #define fd_exec_test_syscall_fixture_t_output_MSGTYPE fd_exec_test_syscall_effects_t
 
 #define FD_EXEC_TEST_VALIDATE_VM_EFFECTS_FIELDLIST(X, a) \
-X(a, STATIC,   SINGULAR, INT32,    result,            1)
+X(a, STATIC,   SINGULAR, INT32,    result,            1) \
+X(a, STATIC,   SINGULAR, BOOL,     success,           2)
 #define FD_EXEC_TEST_VALIDATE_VM_EFFECTS_CALLBACK NULL
 #define FD_EXEC_TEST_VALIDATE_VM_EFFECTS_DEFAULT NULL
 
@@ -616,7 +619,7 @@ extern const pb_msgdesc_t fd_exec_test_validate_vm_effects_t_msg;
 #define FD_EXEC_TEST_INSTR_ACCT_SIZE             10
 #define FD_EXEC_TEST_SLOT_CONTEXT_SIZE           0
 #define FD_EXEC_TEST_TXN_CONTEXT_SIZE            0
-#define FD_EXEC_TEST_VALIDATE_VM_EFFECTS_SIZE    11
+#define FD_EXEC_TEST_VALIDATE_VM_EFFECTS_SIZE    13
 #define ORG_SOLANA_SEALEVEL_V1_FD_EXEC_TEST_PB_H_MAX_SIZE FD_EXEC_TEST_VALIDATE_VM_EFFECTS_SIZE
 
 /* Mapping from canonical names (mangle_names or overridden package name) */

@@ -268,4 +268,5 @@ message SyscallFixture {
 message ValidateVmEffects {
     // Really the only thing we need is if successful or not
     int32 result = 1;
+    bool success = 2;
 }
