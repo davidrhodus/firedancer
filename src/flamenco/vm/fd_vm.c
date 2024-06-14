@@ -50,6 +50,7 @@ fd_vm_strerror( int err ) {
   case FD_VM_ERR_INCOMPLETE_LDQ:    return "INCOMPLETE_LDQ detected an incomplete ldq at program end";
   case FD_VM_ERR_LDQ_NO_ADDL_IMM:   return "LDQ_NO_ADDL_IMM detected a ldq without an addl imm following it";
   case FD_VM_ERR_NO_SUCH_EXT_CALL:  return "NO_SUCH_EXT_CALL detected a call imm with no function was registered for that immediate";
+  case FD_VM_ERR_BAD_TEXT:          return "BAD_TEXT detected a bad text section";
 
   default: break;
   }
@@ -148,6 +149,11 @@ fd_vm_validate( fd_vm_t const * vm ) {
     /* 0xf8 */ FD_INVALID,    /* 0xf9 */ FD_INVALID,    /* 0xfa */ FD_INVALID,    /* 0xfb */ FD_INVALID,
     /* 0xfc */ FD_INVALID,    /* 0xfd */ FD_INVALID,    /* 0xfe */ FD_INVALID,    /* 0xff */ FD_INVALID,
   };
+
+  /* Checks */
+  if( FD_UNLIKELY( (const uchar *) vm->text < vm->rodata ||
+                   (const uchar *) ( vm->text + vm->text_cnt ) >  vm->rodata + vm->rodata_sz ) ) 
+    return FD_VM_ERR_BAD_TEXT;
 
   /* FIXME: CLEAN UP LONG / ULONG TYPE CONVERSION */
 
