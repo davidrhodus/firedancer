@@ -47,7 +47,7 @@ bin2vmctx( char const * program_file, char const * output_file ) {
 
   /* Extract ELF info */
   fd_sbpf_elf_info_t elf_info;
-  FD_TEST( fd_sbpf_elf_peek( &elf_info, _bin, elf_sz ) );
+  FD_TEST( fd_sbpf_elf_peek( &elf_info, _bin, elf_sz, true /* Deploy checks */ ) );
 
   /* Allocate rodata */
   void * rodata = malloc( elf_info.rodata_footprint );
@@ -66,7 +66,7 @@ bin2vmctx( char const * program_file, char const * output_file ) {
   fd_vm_syscall_register_all( syscalls );
 
   /* Load program */
-  if ( 0 != fd_sbpf_program_load( prog, _bin, elf_sz, syscalls ) ) {
+  if ( 0 != fd_sbpf_program_load( prog, _bin, elf_sz, syscalls, true /* deploy checks */ ) ) {
     FD_LOG_ERR(( "Failed to load program: %s", fd_sbpf_strerror() ));
   }
 
