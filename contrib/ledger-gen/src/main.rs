@@ -1,3 +1,5 @@
+#![allow(warnings)]
+
 use {
     solana_sdk::{
         signature::{read_keypair_file},
@@ -48,6 +50,7 @@ fn main() {
     let account_data = vec![0u8; 4];
 
     // ----------------------- ONLY CHANGE BELOW THIS LINE -----------------------
-    ledgers::example_ledger(&rpc_client, &arc_client, &payer, &program_data, &account_data);
-    ledgers::deploy_invoke_same_slot(&rpc_client, &arc_client, &payer, &program_data, &account_data);
+    // ledgers::example_ledger(&rpc_client, &arc_client, &payer, &program_data, &account_data);
+    // ledgers::deploy_invoke_same_slot(&rpc_client, &arc_client, &payer, &program_data, &account_data);
+    ledgers::create_nonce_account(&rpc_client, &payer);
 }

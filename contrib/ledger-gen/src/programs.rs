@@ -4,12 +4,15 @@ use {
             self,
             UpgradeableLoaderState,
         },
-        system_instruction,
+        nonce,
         signature::{Keypair, Signer},
         transaction::Transaction,
         message::Message,
         instruction::{Instruction, AccountMeta},
         pubkey::Pubkey,
+        system_program,
+        system_instruction,
+        sysvar::{recent_blockhashes, rent}
     },
     solana_client::{
         connection_cache::ConnectionCache,
@@ -219,7 +222,7 @@ pub fn invoke_program_instructions(client: &RpcClient, payer: &Keypair, program_
 /// ```
 /// let upgrade_buffer_instructions = programs::upgrade_program_instructions(&payer, &buffer_account_upgrade, &program_account);
 /// ```
-pub fn upgrade_program_instructions(payer: &Keypair, upgrade_buffer_account: &Keypair, program_account: &Keypair) -> Vec<Instruction>{
+pub fn upgrade_program_instructions(payer: &Keypair, upgrade_buffer_account: &Keypair, program_account: &Keypair) -> Vec<Instruction> {
     let upgrade_instruction = bpf_loader_upgradeable::upgrade(
         &program_account.pubkey(),
         &upgrade_buffer_account.pubkey(),
@@ -246,7 +249,7 @@ pub fn upgrade_program_instructions(payer: &Keypair, upgrade_buffer_account: &Ke
 /// ```
 /// let close_program_instructions = programs::close_program_instructions(&payer, &program_account);
 /// ```
-pub fn close_program_instructions(payer: &Keypair, program_account: &Keypair) -> Vec<Instruction>{
+pub fn close_program_instructions(payer: &Keypair, program_account: &Keypair) -> Vec<Instruction> {
     let (program_data_address, _) = Pubkey::find_program_address(&[program_account.pubkey().as_ref()], &bpf_loader_upgradeable::id());
 
     let close_instruction = bpf_loader_upgradeable::close_any(
@@ -257,4 +260,33 @@ pub fn close_program_instructions(payer: &Keypair, program_account: &Keypair) ->
     );
 
     vec![close_instruction]
+}
+
+pub fn create_nonce_account_instructions(nonce_account: Option<Keypair>, payer: &Keypair, lamports: u64) -> (Keypair, Vec<Instruction>)  {
+    let mut nonce_account_instructions = Vec::new();
+
+    let nonce_account = nonce_account.unwrap_or_else(|| Keypair::new());
+
+    let open_account_instruction = system_instruction::create_account(
+        &payer.pubkey(),
+        &nonce_account.pubkey(),
+        lamports,
+        nonce::State::size() as u64,
+        &system_program::id(),
+    );
+    nonce_account_instructions.push(open_account_instruction);
+
+    let initialize_nonce_account_instruction = Instruction::new_with_bincode(
+        system_program::id(),
+        &system_instruction::SystemInstruction::InitializeNonceAccount(payer.pubkey()),
+        vec![
+            AccountMeta::new(nonce_account.pubkey(), false),
+            AccountMeta::new_readonly(recent_blockhashes::id(), false),
+            AccountMeta::new_readonly(rent::id(), false),
+        ],
+    );
+
+    nonce_account_instructions.push(initialize_nonce_account_instruction);    
+
+    (nonce_account, nonce_account_instructions)
 }
