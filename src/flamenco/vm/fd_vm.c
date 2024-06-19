@@ -51,6 +51,7 @@ fd_vm_strerror( int err ) {
   case FD_VM_ERR_LDQ_NO_ADDL_IMM:   return "LDQ_NO_ADDL_IMM detected a ldq without an addl imm following it";
   case FD_VM_ERR_NO_SUCH_EXT_CALL:  return "NO_SUCH_EXT_CALL detected a call imm with no function was registered for that immediate";
   case FD_VM_ERR_BAD_TEXT:          return "BAD_TEXT detected a bad text section";
+  case FD_VM_SH_OVERFLOW:           return "SH_OVERFLOW detected a shift overflow in an instruction";
 
   default: break;
   }
@@ -198,12 +199,12 @@ fd_vm_validate( fd_vm_t const * vm ) {
     }
 
     case FD_CHECK_SH32: {
-      if( FD_UNLIKELY( instr.imm>=32 ) ) return FD_VM_ERR_SIGILL;
+      if( FD_UNLIKELY( instr.imm>=32 ) ) return FD_VM_SH_OVERFLOW;
       break;
     }
 
     case FD_CHECK_SH64: {
-      if( FD_UNLIKELY( instr.imm>=64 ) ) return FD_VM_ERR_SIGILL;
+      if( FD_UNLIKELY( instr.imm>=64 ) ) return FD_VM_SH_OVERFLOW;
       break;
     }
 

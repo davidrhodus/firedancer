@@ -75,6 +75,7 @@
 #define FD_VM_ERR_LDQ_NO_ADDL_IMM   (-33) /* detected a ldq without an addl imm following it */
 #define FD_VM_ERR_NO_SUCH_EXT_CALL  (-34) /* detected a call imm with no function was registered for that immediate */
 #define FD_VM_ERR_BAD_TEXT          (-35) /* detected a bad text section */
+#define FD_VM_SH_OVERFLOW           (-36) /* detected a shift overflow, equivalent to VeriferError::ShiftWithOverflow */
 
 FD_PROTOTYPES_BEGIN
 
