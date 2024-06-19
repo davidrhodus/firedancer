@@ -1204,37 +1204,48 @@ fd_exec_vm_validate_test_run( fd_exec_test_vm_context_t const *     input,
                                 sizeof (fd_exec_test_validate_vm_effects_t) );
   FD_SCRATCH_ALLOC_FINI( l, 1UL );
 
-  uchar * rodata = input->rodata->bytes;
-  ulong rodata_sz = input->rodata->size;
+  do{
+    uchar * rodata = input->rodata->bytes;
+    ulong rodata_sz = input->rodata->size;
 
-  /* TODO: check if this is correct */
-  ulong * text = (ulong *) (rodata + input->rodata_text_section_offset);
-  ulong text_cnt = input->rodata_text_section_length / 8UL;
+    /* TODO: check if this is correct */
+    ulong * text = (ulong *) (rodata + input->rodata_text_section_offset);
+    
+    ulong text_cnt = input->rodata_text_section_length / 8UL;
 
-  fd_vm_t * vm = fd_vm_join( fd_vm_new( fd_valloc_malloc( valloc, fd_vm_align(), fd_vm_footprint() ) ) );
-  FD_TEST( vm );
+    fd_vm_t * vm = fd_vm_join( fd_vm_new( fd_valloc_malloc( valloc, fd_vm_align(), fd_vm_footprint() ) ) );
+    FD_TEST( vm );
 
-  fd_vm_init(
-    vm,
-    NULL, /* ctx */
-    0, /* heap_max */
-    0, /* cu_avail */
-    rodata,
-    rodata_sz,
-    text,
-    text_cnt,
-    input->rodata_text_section_offset,
-    0, /* entry_pc, not used in validate at the moment */
-    NULL, /* calldests */
-    NULL, /* syscalls */
-    NULL, /* input */
-    0, /* input_sz */
-    NULL, /* trace */
-    NULL /* sha */
-  );
+    fd_vm_init(
+      vm,
+      NULL, /* ctx */
+      0, /* heap_max */
+      0, /* cu_avail */
+      rodata,
+      rodata_sz,
+      text,
+      text_cnt,
+      input->rodata_text_section_offset,
+      0, /* entry_pc, not used in validate at the moment */
+      NULL, /* calldests */
+      NULL, /* syscalls */
+      NULL, /* input */
+      0, /* input_sz */
+      NULL, /* trace */
+      NULL /* sha */
+    );
+    effects->result = fd_vm_validate( vm );
+
+    /* FIXME: Check should go somewhere in target code, not here? */
+    if( FD_UNLIKELY( input->rodata_text_section_length % 8UL != 0 ) && effects->result != -35 ){
+      effects->result = -1;
+      break;
+    }
+  }while(0);
+  
 
   /* Run vm validate and capture result */
-  effects->result = fd_vm_validate( vm );
+  
   effects->success = (effects->result == FD_VM_SUCCESS);
 
   *output = effects;
