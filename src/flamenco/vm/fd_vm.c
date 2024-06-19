@@ -134,7 +134,7 @@ fd_vm_validate( fd_vm_t const * vm ) {
     /* 0xb8 */ FD_INVALID,    /* 0xb9 */ FD_INVALID,    /* 0xba */ FD_INVALID,    /* 0xbb */ FD_INVALID,
     /* 0xbc */ FD_VALID,      /* 0xbd */ FD_CHECK_JMP,  /* 0xbe */ FD_INVALID,    /* 0xbf */ FD_VALID,
     /* 0xc0 */ FD_INVALID,    /* 0xc1 */ FD_INVALID,    /* 0xc2 */ FD_INVALID,    /* 0xc3 */ FD_INVALID,
-    /* 0xc4 */ FD_VALID,      /* 0xc5 */ FD_CHECK_JMP,  /* 0xc6 */ FD_INVALID,    /* 0xc7 */ FD_VALID,
+    /* 0xc4 */ FD_CHECK_SH32, /* 0xc5 */ FD_CHECK_JMP,  /* 0xc6 */ FD_INVALID,    /* 0xc7 */ FD_CHECK_SH64,
     /* 0xc8 */ FD_INVALID,    /* 0xc9 */ FD_INVALID,    /* 0xca */ FD_INVALID,    /* 0xcb */ FD_INVALID,
     /* 0xcc */ FD_VALID,      /* 0xcd */ FD_CHECK_JMP,  /* 0xce */ FD_INVALID,    /* 0xcf */ FD_VALID,
     /* 0xd0 */ FD_INVALID,    /* 0xd1 */ FD_INVALID,    /* 0xd2 */ FD_INVALID,    /* 0xd3 */ FD_INVALID,
