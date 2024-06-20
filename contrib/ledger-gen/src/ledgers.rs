@@ -142,6 +142,7 @@ pub fn create_nonce_account(client: &RpcClient, payer: &Keypair) {
     let mut transaction = Transaction::new_unsigned(message);
     let _ = transaction.try_sign(&vec![&payer, &new_account], nonce_blockhash).unwrap();
     let _ = client.send_and_confirm_transaction(&transaction).unwrap();
+    println!("Opened Account: {:?}", new_account.pubkey());
 
     utils::wait_atleast_n_slots(&client, 2);
 
@@ -176,6 +177,18 @@ pub fn create_nonce_account(client: &RpcClient, payer: &Keypair) {
     );
     let mut transaction = Transaction::new_unsigned(message);
     let _ = transaction.try_sign(&vec![&payer, &new_account], nonce_blockhash).unwrap();
+    println!("Transaction: {:?}", transaction);
+    utils::wait_atleast_n_slots(&client, 2);
+    // let _ = client.send_transaction_with_config(&transaction, *utils::SKIP_PREFLIGHT_CONFIG).unwrap();
     let _ = client.send_and_confirm_transaction(&transaction).unwrap();
 
+    utils::wait_atleast_n_slots(&client, 2);
+
+    let nonce_blockhash = match get_account_with_commitment(client, &nonce_account.pubkey(), CommitmentConfig::processed())
+        .and_then(|ref a| nonblocking::state_from_account(a)).unwrap()
+    {
+        NonceState::Initialized(ref data) => data.blockhash(),
+        _ => panic!("Nonce Account not Initialized"),
+    };
+    println!("Nonce Blockhash: {:?}", nonce_blockhash);
 }
