@@ -43,7 +43,7 @@ def parse_genesis_output(output):
 
 async def run_genesis(output_dir, solana_source_directory):
     process = await asyncio.create_subprocess_shell(
-        f"{solana_binary('solana-genesis', solana_source_directory)} --cluster-type mainnet-beta --ledger node-ledger-0 --bootstrap-validator 'keys-0/id.json' 'keys-0/vote.json' 'keys-0/stake.json' --bootstrap-stake-authorized-pubkey 'keys-0/id.json' --bootstrap-validator-lamports 10000000000 --bootstrap-validator-stake-lamports 32282880 --faucet-pubkey 'faucet.json' --faucet-lamports 5000000000000000 --hashes-per-tick sleep --target-tick-duration 50000 --slots-per-epoch 32",
+        f"{solana_binary('solana-genesis', solana_source_directory)} --cluster-type mainnet-beta --ledger node-ledger-0 --bootstrap-validator 'keys-0/id.json' 'keys-0/vote.json' 'keys-0/stake.json' --bootstrap-stake-authorized-pubkey 'keys-0/id.json' --bootstrap-validator-lamports 10000000000 --bootstrap-validator-stake-lamports 32282880 --faucet-pubkey 'faucet.json' --faucet-lamports 5000000000000000 --hashes-per-tick sleep --target-tick-duration 50000 --slots-per-epoch 128",
          stdout=asyncio.subprocess.PIPE,
          stderr=asyncio.subprocess.PIPE,
          cwd=output_dir)

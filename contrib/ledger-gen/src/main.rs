@@ -52,5 +52,6 @@ fn main() {
     // ----------------------- ONLY CHANGE BELOW THIS LINE -----------------------
     // ledgers::example_ledger(&rpc_client, &arc_client, &payer, &program_data, &account_data);
     // ledgers::deploy_invoke_same_slot(&rpc_client, &arc_client, &payer, &program_data, &account_data);
-    ledgers::create_nonce_account(&rpc_client, &payer);
+    // ledgers::create_nonce_account(&rpc_client, &payer);
+    ledgers::bpf_program_ledger(&rpc_client, &arc_client, &payer, &program_data, &account_data);
 }

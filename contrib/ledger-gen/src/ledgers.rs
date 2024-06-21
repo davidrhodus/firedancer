@@ -141,7 +141,7 @@ pub fn upgrade_invoke_same_slot(client: &RpcClient, arc_client: &Arc<RpcClient>,
     // Upgrade Program
     let upgrade_program_instructions = programs::upgrade_program_instructions(&payer, &buffer_account_upgrade, &program_account);
     let transaction = utils::create_message_and_sign(&upgrade_program_instructions, &payer, vec![&payer], client.get_latest_blockhash().unwrap());
-    let _ = client.send_and_confirm_transaction(&transaction).unwrap();
+    let _ = client.send_transaction_with_config(&transaction, *utils::SKIP_PREFLIGHT_CONFIG).unwrap();
     println!("Upgraded Program Signature: {:?} - Slot: {:?}", transaction.signatures[0], client.get_slot_with_commitment(CommitmentConfig::processed()).unwrap());
 
     // Invoke Program
@@ -168,7 +168,7 @@ pub fn upgrade_invoke_diff_slot(client: &RpcClient, arc_client: &Arc<RpcClient>,
     // Upgrade Program
     let upgrade_program_instructions = programs::upgrade_program_instructions(&payer, &buffer_account_upgrade, &program_account);
     let transaction = utils::create_message_and_sign(&upgrade_program_instructions, &payer, vec![&payer], client.get_latest_blockhash().unwrap());
-    let _ = client.send_and_confirm_transaction(&transaction).unwrap();
+    let _ = client.send_transaction_with_config(&transaction, *utils::SKIP_PREFLIGHT_CONFIG).unwrap();
     println!("Upgraded Program Signature: {:?} - Slot: {:?}", transaction.signatures[0], client.get_slot_with_commitment(CommitmentConfig::processed()).unwrap());
 
     utils::wait_atleast_n_slots(&client, 2);
@@ -196,7 +196,7 @@ pub fn deploy_close_same_slot(client: &RpcClient, arc_client: &Arc<RpcClient>, p
     // Close Program
     let close_program_instructions = programs::close_program_instructions(&payer, &program_account);
     let transaction = utils::create_message_and_sign(&close_program_instructions, &payer, vec![&payer], client.get_latest_blockhash().unwrap());
-    let _ = client.send_and_confirm_transaction(&transaction).unwrap();
+    let _ = client.send_transaction_with_config(&transaction, *utils::SKIP_PREFLIGHT_CONFIG).unwrap();
     println!("Closed Program Signature: {:?} - Slot: {:?}", transaction.signatures[0], client.get_slot_with_commitment(CommitmentConfig::processed()).unwrap());
 }
 
@@ -216,7 +216,7 @@ pub fn deploy_close_diff_slot(client: &RpcClient, arc_client: &Arc<RpcClient>, p
     // Close Program
     let close_program_instructions = programs::close_program_instructions(&payer, &program_account);
     let transaction = utils::create_message_and_sign(&close_program_instructions, &payer, vec![&payer], client.get_latest_blockhash().unwrap());
-    let _ = client.send_and_confirm_transaction(&transaction).unwrap();
+    let _ = client.send_transaction_with_config(&transaction, *utils::SKIP_PREFLIGHT_CONFIG).unwrap();
     println!("Closed Program Signature: {:?} - Slot: {:?}", transaction.signatures[0], client.get_slot_with_commitment(CommitmentConfig::processed()).unwrap());
 }
 
@@ -236,7 +236,7 @@ pub fn close_invoke_same_slot(client: &RpcClient, arc_client: &Arc<RpcClient>, p
     // Close Program
     let close_program_instructions = programs::close_program_instructions(&payer, &program_account);
     let transaction = utils::create_message_and_sign(&close_program_instructions, &payer, vec![&payer], client.get_latest_blockhash().unwrap());
-    let _ = client.send_and_confirm_transaction(&transaction).unwrap();
+    let _ = client.send_transaction_with_config(&transaction, *utils::SKIP_PREFLIGHT_CONFIG).unwrap();
     println!("Closed Program Signature: {:?} - Slot: {:?}", transaction.signatures[0], client.get_slot_with_commitment(CommitmentConfig::processed()).unwrap());
 
     // Invoke Program
@@ -262,7 +262,7 @@ pub fn close_invoke_diff_slot(client: &RpcClient, arc_client: &Arc<RpcClient>, p
     // Close Program
     let close_program_instructions = programs::close_program_instructions(&payer, &program_account);
     let transaction = utils::create_message_and_sign(&close_program_instructions, &payer, vec![&payer], client.get_latest_blockhash().unwrap());
-    let _ = client.send_and_confirm_transaction(&transaction).unwrap();
+    let _ = client.send_transaction_with_config(&transaction, *utils::SKIP_PREFLIGHT_CONFIG).unwrap();
     println!("Closed Program Signature: {:?} - Slot: {:?}", transaction.signatures[0], client.get_slot_with_commitment(CommitmentConfig::processed()).unwrap());
 
     utils::wait_atleast_n_slots(&client, 2);
@@ -272,6 +272,20 @@ pub fn close_invoke_diff_slot(client: &RpcClient, arc_client: &Arc<RpcClient>, p
     let transaction = utils::create_message_and_sign(&invoke_program_instructions, &payer, vec![&payer, &run_account], client.get_latest_blockhash().unwrap());
     let _ = client.send_transaction_with_config(&transaction, *utils::SKIP_PREFLIGHT_CONFIG).unwrap();
     println!("Invoked Program Signature: {:?} - Slot: {:?}", transaction.signatures[0], client.get_slot_with_commitment(CommitmentConfig::processed()).unwrap());
+}
+
+pub fn bpf_program_ledger(client: &RpcClient, arc_client: &Arc<RpcClient>, payer: &Keypair, program_data: &Vec<u8>, account_data: &Vec<u8>) {
+    deploy_invoke_same_slot(&client, &arc_client, &payer, &program_data, &account_data);
+    deploy_invoke_diff_slot(&client, &arc_client, &payer, &program_data, &account_data);
+
+    upgrade_invoke_same_slot(&client, &arc_client, &payer, &program_data, &account_data);
+    upgrade_invoke_diff_slot(&client, &arc_client, &payer, &program_data, &account_data);
+
+    deploy_close_same_slot(&client, &arc_client, &payer, &program_data, &account_data);
+    deploy_close_diff_slot(&client, &arc_client, &payer, &program_data, &account_data);
+
+    close_invoke_same_slot(&client, &arc_client, &payer, &program_data, &account_data);
+    close_invoke_diff_slot(&client, &arc_client, &payer, &program_data, &account_data);
 }
 
 pub fn create_nonce_account(client: &RpcClient, payer: &Keypair) {
