@@ -166,7 +166,7 @@ FD_PROTOTYPES_BEGIN
    for a memory region to hold a fd_vm_t.  ALIGN is a positive
    integer power of 2.  FOOTPRINT is a multiple of align. These are provided to facilitate compile time declarations. */
 #define FD_VM_ALIGN     (8UL)
-#define FD_VM_FOOTPRINT (799528UL)
+#define FD_VM_FOOTPRINT (799536UL)
 
 /* fd_vm_{align,footprint} give the needed alignment and footprint
    of a memory region suitable to hold an fd_vm_t.

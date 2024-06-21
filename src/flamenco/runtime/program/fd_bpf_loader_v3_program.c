@@ -188,6 +188,7 @@ deploy_program( fd_exec_instr_ctx_t * instr_ctx,
     /* text      */ prog->text,
     /* text_cnt  */ prog->text_cnt,
     /* text_off  */ prog->text_off, /* FIXME: What if text_off is not multiple of 8 */
+    /* text_sz   */ prog->text_sz,
     /* entry_pc  */ prog->entry_pc,
     /* calldests */ prog->calldests,
     /* syscalls  */ syscalls,
