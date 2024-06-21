@@ -367,6 +367,7 @@ execute( fd_exec_instr_ctx_t * instr_ctx, fd_sbpf_validated_program_t * prog ) {
     /* text      */ (ulong *)((ulong)fd_sbpf_validated_program_rodata( prog ) + (ulong)prog->text_off), /* Note: text_off is byte offset */
     /* text_cnt  */ prog->text_cnt,
     /* text_off  */ prog->text_off,
+    /* text_sz   */ prog->text_sz,
     /* entry_pc  */ prog->entry_pc,
     /* calldests */ prog->calldests,
     /* syscalls  */ syscalls,
